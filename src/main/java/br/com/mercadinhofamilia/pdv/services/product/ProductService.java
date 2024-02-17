@@ -1,9 +1,11 @@
 package br.com.mercadinhofamilia.pdv.services.product;
 
 import br.com.mercadinhofamilia.pdv.dtos.input.product.ProductInputDTO;
-import br.com.mercadinhofamilia.pdv.dtos.output.product.ProductOutputDTO;
+import br.com.mercadinhofamilia.pdv.dtos.output.product.CreateProductOutputDTO;
+import br.com.mercadinhofamilia.pdv.models.category.CategoryCheckOutputDTO;
 import br.com.mercadinhofamilia.pdv.entities.product.Product;
 import br.com.mercadinhofamilia.pdv.repositories.product.ProductRepository;
+import br.com.mercadinhofamilia.pdv.services.category.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,13 +17,16 @@ import static java.util.Objects.nonNull;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
 
-    public ProductOutputDTO create(@Valid ProductInputDTO productInputDTO) {
+    public CreateProductOutputDTO create(@Valid ProductInputDTO productInputDTO) {
+        CategoryCheckOutputDTO categoryCheckOutputDTO = categoryService.verifyCategories(productInputDTO.getCategories());
+
         verifyIfAlreadyExists(productInputDTO.getName(), productInputDTO.getBarcode());
 
-        Product product = save(new Product(productInputDTO));
+        Product product = save(new Product(productInputDTO, categoryCheckOutputDTO.getExistingCategories()));
 
-        return new ProductOutputDTO(product);
+        return new CreateProductOutputDTO(product, categoryCheckOutputDTO.getNonExistingCategories());
     }
 
     private void verifyIfAlreadyExists(String name, String barcode) {

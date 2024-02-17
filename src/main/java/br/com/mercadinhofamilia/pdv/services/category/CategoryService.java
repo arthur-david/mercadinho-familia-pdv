@@ -2,6 +2,7 @@ package br.com.mercadinhofamilia.pdv.services.category;
 
 import br.com.mercadinhofamilia.pdv.dtos.input.category.CreateCategoryInputDTO;
 import br.com.mercadinhofamilia.pdv.dtos.input.category.UpdateCategoryInputDTO;
+import br.com.mercadinhofamilia.pdv.models.category.CategoryCheckOutputDTO;
 import br.com.mercadinhofamilia.pdv.dtos.output.category.CategoryOutputDTO;
 import br.com.mercadinhofamilia.pdv.dtos.output.page.PageResultOutputDTO;
 import br.com.mercadinhofamilia.pdv.entities.category.Category;
@@ -29,7 +30,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public CategoryOutputDTO create(@Valid CreateCategoryInputDTO createCategoryInputDTO) {
-        verifyIfAlreadyExists(createCategoryInputDTO.getName());
+        verifyIfAlreadyExistsByName(createCategoryInputDTO.getName());
 
         Category category = save(new Category(createCategoryInputDTO));
 
@@ -54,22 +55,40 @@ public class CategoryService {
     }
 
     public CategoryOutputDTO update(@Valid UpdateCategoryInputDTO updateCategoryInputDTO) {
-        Category category = findById(updateCategoryInputDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada, tente fazer um novo cadastro para essa categoria."));
+        Category category = findByIdOrElseThrow(updateCategoryInputDTO.getId(), "Categoria não encontrada, tente fazer um novo cadastro para essa categoria.");
         category.update(updateCategoryInputDTO.getName());
 
         return new CategoryOutputDTO(category);
     }
 
     public void delete(@NotNull Long id) {
-        findById(id).orElseThrow(() -> new IllegalArgumentException("A categoria que você está tentando deletar não foi encontrada."));
+        findByIdOrElseThrow(id, "A categoria que você está tentando deletar não foi encontrada.");
         deleteById(id);
     }
 
-    private void verifyIfAlreadyExists(String name) {
+    public void verifyIfAlreadyExistsByName(String name) {
         Category category = findByName(name);
         if (nonNull(category))
             throw new IllegalArgumentException("Categoria já cadastrada com o nome: ".concat(name));
+    }
+
+    public CategoryCheckOutputDTO verifyCategories(List<Long> ids) {
+        List<Category> existingCategories = new ArrayList<>();
+        List<Long> nonExistingCategories = new ArrayList<>();
+
+        for (Long id : ids) {
+            findById(id)
+                .ifPresentOrElse(
+                    existingCategories::add,
+                    () ->  nonExistingCategories.add(id)
+                );
+        }
+
+        return new CategoryCheckOutputDTO(existingCategories, nonExistingCategories);
+    }
+
+    public Category findByIdOrElseThrow(Long id, String errorMessage) {
+        return findById(id).orElseThrow(() -> new IllegalArgumentException(errorMessage));
     }
 
     public Optional<Category> findById(Long id) {

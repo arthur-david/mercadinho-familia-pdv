@@ -48,10 +48,11 @@ public class Product {
     @ManyToMany(mappedBy = "products")
     private List<Category> categories;
 
-    public Product(ProductInputDTO productInputDTO) {
+    public Product(ProductInputDTO productInputDTO, List<Category> categories) {
         setName(productInputDTO.getName());
         setBarcode(productInputDTO.getBarcode());
         setPrice(productInputDTO.getPrice());
         setStatus(ProductStatus.AVAILABLE);
+        setCategories(categories);
     }
 }

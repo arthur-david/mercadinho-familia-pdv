@@ -1,7 +1,7 @@
 package br.com.mercadinhofamilia.pdv.controllers.product;
 
 import br.com.mercadinhofamilia.pdv.dtos.input.product.ProductInputDTO;
-import br.com.mercadinhofamilia.pdv.dtos.output.product.ProductOutputDTO;
+import br.com.mercadinhofamilia.pdv.dtos.output.product.CreateProductOutputDTO;
 import br.com.mercadinhofamilia.pdv.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductOutputDTO> create(@RequestBody ProductInputDTO productInputDTO) {
-        ProductOutputDTO productOutputDTO = productService.create(productInputDTO);
+    public ResponseEntity<CreateProductOutputDTO> create(@RequestBody ProductInputDTO productInputDTO) {
+        CreateProductOutputDTO productOutputDTO = productService.create(productInputDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(productOutputDTO);
     }
 }

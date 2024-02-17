@@ -12,11 +12,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CategoryOutputDTO {
 
+    private Long id;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public CategoryOutputDTO(Category category) {
+        setId(id);
         setName(category.getName());
         setCreatedAt(category.getCreatedAt());
         setUpdatedAt(category.getUpdatedAt());

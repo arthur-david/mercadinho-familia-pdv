@@ -45,7 +45,7 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "products")
     private List<Category> categories;
 
     public Product(ProductInputDTO productInputDTO) {

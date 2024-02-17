@@ -1,7 +1,8 @@
 package br.com.mercadinhofamilia.pdv.entities.category;
 
-import br.com.mercadinhofamilia.pdv.dtos.input.category.CategoryInputDTO;
+import br.com.mercadinhofamilia.pdv.dtos.input.category.CreateCategoryInputDTO;
 import br.com.mercadinhofamilia.pdv.entities.product.Product;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,14 +37,18 @@ public class Category {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "category_product",
             joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id"))
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
 
-    public Category(CategoryInputDTO categoryInputDTO) {
-        setName(categoryInputDTO.getName());
+    public Category(CreateCategoryInputDTO createCategoryInputDTO) {
+        setName(createCategoryInputDTO.getName());
+    }
+
+    public void update(String name) {
+        setName(name);
     }
 }

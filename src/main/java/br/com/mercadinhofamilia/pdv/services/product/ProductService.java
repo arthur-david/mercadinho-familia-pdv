@@ -32,11 +32,11 @@ public class ProductService {
     private void verifyIfAlreadyExists(String name, String barcode) {
         Product product = productRepository.findByName(name);
         if (nonNull(product))
-            throw new IllegalArgumentException("Produto já cadastrado com o nome: ".concat(name));
+            throw new IllegalArgumentException(String.format("O produto %s já está cadastrado.", name));
 
         product = productRepository.findByBarcode(barcode);
         if (nonNull(product))
-            throw new IllegalArgumentException("Produto já cadastrado com o código de barra: ".concat(barcode));
+            throw new IllegalArgumentException(String.format("Um produto já está cadastrado com o código de barra %s", barcode));
     }
 
     public Product save(Product product) {

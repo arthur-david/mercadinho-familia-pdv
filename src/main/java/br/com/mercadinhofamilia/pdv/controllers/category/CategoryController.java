@@ -27,7 +27,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResultOutputDTO<CategoryOutputDTO>> search(@RequestParam String idOrName, @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<PageResultOutputDTO<CategoryOutputDTO>> search(@RequestParam(required = false) String idOrName, @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         PageResultOutputDTO<CategoryOutputDTO> categories = categoryService.search(idOrName, pageable);
         return ResponseEntity.ok(categories);
     }

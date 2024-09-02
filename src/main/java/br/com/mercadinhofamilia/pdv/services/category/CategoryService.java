@@ -5,7 +5,6 @@ import br.com.mercadinhofamilia.pdv.dtos.input.category.UpdateCategoryInputDTO;
 import br.com.mercadinhofamilia.pdv.dtos.output.category.CategoryOutputDTO;
 import br.com.mercadinhofamilia.pdv.dtos.output.page.PageResultOutputDTO;
 import br.com.mercadinhofamilia.pdv.entities.category.Category;
-import br.com.mercadinhofamilia.pdv.models.category.CategoryCheckOutputDTO;
 import br.com.mercadinhofamilia.pdv.repositories.category.CategoryRepository;
 import br.com.mercadinhofamilia.pdv.specifications.category.CategorySpecification;
 import jakarta.validation.Valid;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,25 +53,14 @@ public class CategoryService {
         deleteById(id);
     }
 
+    public List<Category> findAllCategoriesByIds(@NotNull List<Long> ids) {
+        return categoryRepository.findAllById(ids);
+    }
+
     public void verifyIfAlreadyExistsByName(String name) {
         Category category = findByName(name);
         if (nonNull(category))
             throw new IllegalArgumentException("Categoria já cadastrada com o nome: ".concat(name));
-    }
-
-    public CategoryCheckOutputDTO verifyCategories(List<Long> ids) {
-        List<Category> existingCategories = new ArrayList<>();
-        List<Long> nonExistingCategories = new ArrayList<>();
-
-        for (Long id : ids) {
-            findById(id)
-                .ifPresentOrElse(
-                    existingCategories::add,
-                    () ->  nonExistingCategories.add(id)
-                );
-        }
-
-        return new CategoryCheckOutputDTO(existingCategories, nonExistingCategories);
     }
 
     public Category findByIdOrElseThrow(Long id, String errorMessage) {
@@ -92,7 +79,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    private void deleteById(Long id) {
+    public void deleteById(Long id) {
         categoryRepository.deleteById(id);
     }
 }

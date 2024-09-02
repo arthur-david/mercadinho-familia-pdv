@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.mercadinhofamilia.pdv.helpers.StringHelper.isPositiveIntegerNumber;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Getter
@@ -29,7 +30,7 @@ public class CategorySpecification implements Specification<Category> {
         List<Predicate> predicates = new ArrayList<>();
 
         if (isNotBlank(idOrName)) {
-            if (StringUtils.isNumeric(idOrName))
+            if (isPositiveIntegerNumber(idOrName))
                 predicates.add(criteriaBuilder.equal(root.get("id"), idOrName));
             else
                 predicates.add(criteriaBuilder.like(root.get("name").as(String.class), idOrName + "%"));

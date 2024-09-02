@@ -26,9 +26,8 @@ public class CreateProductOutputDTO {
     private List<CategoryOutputDTO> categories;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<Long> categoriesNotFound;
 
-    public CreateProductOutputDTO(Product product, List<Long> nonExistingCategories) {
+    public CreateProductOutputDTO(Product product) {
         setName(product.getName());
         setBarcode(product.getBarcode());
         setPrice(product.getPrice());
@@ -39,6 +38,5 @@ public class CreateProductOutputDTO {
 
         setCreatedAt(product.getCreatedAt());
         setUpdatedAt(product.getUpdatedAt());
-        setCategoriesNotFound(nonExistingCategories);
     }
 }
